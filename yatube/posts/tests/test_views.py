@@ -223,7 +223,7 @@ class ViewsTests(TestCase):
         self.assertEqual(post, ViewsTests.author_post)
 
     def test_cache(self):
-        response = self.auth_user.get(ViewsTests.index_url)
+        self.auth_user.get(ViewsTests.index_url)
         form_data = {
             'text': 'New',
         }

@@ -82,7 +82,7 @@ class Comment(models.Model):
     text = models.TextField(verbose_name="Комментарий",
                             help_text=(
                                 "Здесь вы можете написать все, что думаете"
-                                )
+                            )
                             )
     created = models.DateTimeField(verbose_name="Дата создания комментария",
                                    auto_now_add=True,
