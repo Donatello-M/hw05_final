@@ -1,10 +1,8 @@
 {% load user_filters %}
-<!-- Форма добавления комментария -->
-{% load user_filters %}
 
 {% if user.is_authenticated %}
 <div class="card my-3">
-    <form method="post" action="/{{ author.username }}/{{ post.id }}/comment/">
+    <form method="post" action="{% url 'posts:add_comment' author.username post.id %}">
         {% csrf_token %}
         <h5 class="card-header">Добавить комментарий:</h5>
         {% if form.errors %}
@@ -39,7 +37,7 @@
         <div class="media-body card-body">-->
     <div style="margin-left: 20px">
         <h5 class="mt-2">
-            <a href="/{{item.author.username}}/"
+            <a href="{% url 'posts:profile' item.author.username %}"
                name="comment_{{ item.id }}">
                 {{ item.author.username }}
             </a>

@@ -15,7 +15,7 @@ def index(request):
     page = paginator.get_page(page_num)
     return render(
         request, "posts/index.html",
-        {"page": page, "index_tmp": True}
+        {"page": page}
     )
 
 
@@ -34,7 +34,7 @@ def group_posts(request, slug):
 
 @login_required
 def new_post(request):
-    form = PostForm(request.POST or None)
+    form = PostForm(request.POST or None, files=request.FILES or None)
     if form.is_valid():
         post = form.save(commit=False)
         post.author = request.user
@@ -51,21 +51,20 @@ def profile(request, username):
     user = get_object_or_404(User, username=username)
     posts = user.posts.all()
     num = posts.count()
+    followers = user.following.count()
+    follows = user.follower.count()
     following = False
-    authors = []
     if request.user.is_authenticated:
-        follows = request.user.follower.all()
-        for follow in follows:
-            authors.append(follow.author)
-        if user in authors:
-            following = True
+        following = Follow.objects.filter(author=user,
+                                          user=request.user).exists()
     paginator = Paginator(posts, POSTS_ON_PAGE)
     page_num = request.GET.get("page")
     page = paginator.get_page(page_num)
     return render(
         request, "posts/profile.html", context={
             "author": user, "num_of_posts": num,
-            "page": page, "following": following
+            "page": page, "following": following,
+            "followers": followers, "follows": follows
         }
     )
 
@@ -99,39 +98,35 @@ def add_comment(request, username, post_id):
         comment.post = post
         comment.save()
         return redirect("posts:post_view", post_id=post_id, username=username)
-    return render(
-        request, "posts/post.html", context={
-            "author": post.author, "post": post, "form": form
-        }
-    )
+    return redirect("posts:post_view", post_id=post_id, username=username)
 
 
 def post_view(request, username, post_id):
     post = get_object_or_404(Post, pk=post_id, author__username=username)
     num = post.author.posts.count()
+    followers = post.author.following.count()
+    follows = post.author.follower.count()
     comments = post.comments.all()
     form = CommentForm(request.POST or None)
     return render(
         request, "posts/post.html", context={
             "author": post.author, "num_of_posts": num,
-            "post": post, "comments": comments, 'form': form, "on_post": True
+            "post": post, "comments": comments, 'form': form, "on_post": True,
+            "followers": followers, "follows": follows
         }
     )
 
 
 @login_required
 def follow_index(request):
-    authors = []
     follows = request.user.follower.all()
-    for follow in follows:
-        authors.append(follow.author)
-    posts = Post.objects.filter(author__in=authors)
+    posts = Post.objects.filter(author__following__in=follows)
     paginator = Paginator(posts, POSTS_ON_PAGE)
     page_num = request.GET.get("page")
     page = paginator.get_page(page_num)
     return render(
         request,
-        "posts/follow.html", {"page": page, "follow_tmp": True}
+        "posts/follow.html", {"page": page}
     )
 
 
@@ -139,7 +134,7 @@ def follow_index(request):
 def profile_follow(request, username):
     follow_author = get_object_or_404(User, username=username)
     if request.user == follow_author:
-        return redirect("posts:self_follow")
+        return redirect("posts:profile", username=username)
     Follow.objects.get_or_create(author=follow_author, user=request.user)
     return redirect("posts:profile", username=username)
 
@@ -153,7 +148,7 @@ def profile_unfollow(request, username):
         )
         unfollow.delete()
         return redirect("posts:profile", username=username)
-    return redirect("posts:self_follow")
+    return redirect("posts:profile", username=username)
 
 
 def page_not_found(request, exception):

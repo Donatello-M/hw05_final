@@ -34,9 +34,7 @@ class StaticURLTests(TestCase):
             '/new/':
                 'posts/new_post.html',
             f'/{cls.post.author.username}/{cls.post.pk}/edit/':
-                'posts/new_post.html',
-            f'/{cls.post.author.username}/{cls.post.pk}/comment/':
-                'posts/post.html'
+                'posts/new_post.html'
         }
 
     def setUp(self):

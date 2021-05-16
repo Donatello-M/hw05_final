@@ -3,12 +3,12 @@
 <li class="list-group-item">
     {% if following %}
     <a class="btn btn-lg btn-light"
-       href="/{{ author.username }}/unfollow" role="button">
+       href="{% 'posts:profile_unfollow' author.username }" role="button">
         Отписаться
     </a>
     {% else %}
     <a class="btn btn-lg btn-primary"
-       href="/{{ author.username }}/follow" role="button">
+       href="{% 'posts:profile_follow' author.username }" role="button">
         Подписаться
     </a>
     {% endif %}

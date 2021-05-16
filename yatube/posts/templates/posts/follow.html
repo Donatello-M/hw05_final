@@ -1,20 +1,13 @@
 {% extends "base.html" %}
-{% load cache %}
-{% block title %} Подписки {% endblock %}
-
+{% block title %}Подписки{% endblock %}
 {% block content %}
 <h1>Новые записи ваших любимых авторов</h1>
-
 <div class="container">
-    {% include "includes/menu.html" with index=True %}
-    <!-- Вывод ленты записей -->
+    {% include "includes/menu.html" with follow=True %}
     {% for post in page %}
-    <!-- Вот он, новый include! -->
     {% include "includes/author_post.html" with post=post %}
     {% endfor %}
 </div>
-
-<!-- Вывод паджинатора -->
 {% if page.has_other_pages %}
 {% include "padginator.html" %}
 {% endif %}
