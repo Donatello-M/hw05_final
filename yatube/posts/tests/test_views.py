@@ -1,18 +1,16 @@
-from django import forms
-from django.db import models
-from django.contrib.auth import get_user_model
-from django.test import Client, TestCase
-from django.urls import reverse
 import shutil
 import tempfile
-import time
 
+from django import forms
 from django.conf import settings
-from django.core.files.uploadedfile import SimpleUploadedFile
+from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.core.cache.utils import make_template_fragment_key
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import Client, TestCase
+from django.urls import reverse
 
-from ..models import Group, Post, Follow
+from ..models import Follow, Group, Post
 
 User = get_user_model()
 
@@ -203,16 +201,16 @@ class ViewsTests(TestCase):
     def test_profile_follow(self):
         f_count = Follow.objects.filter(author=ViewsTests.author,
                                         user=ViewsTests.user).count()
-        response = self.auth_user.get(ViewsTests.profile_follow_url)
+        self.auth_user.get(ViewsTests.profile_follow_url)
         s_count = Follow.objects.filter(author=ViewsTests.author,
                                         user=ViewsTests.user).count()
         self.assertEqual(s_count, f_count + 1)
 
     def test_profile_unfollow(self):
-        response = self.auth_user.get(ViewsTests.profile_follow_url)
+        self.auth_user.get(ViewsTests.profile_follow_url)
         f_count = Follow.objects.filter(author=ViewsTests.author,
                                         user=ViewsTests.user).count()
-        response = self.auth_user.get(ViewsTests.profile_unfollow_url)
+        self.auth_user.get(ViewsTests.profile_unfollow_url)
         s_count = Follow.objects.filter(author=ViewsTests.author,
                                         user=ViewsTests.user).count()
         self.assertEqual(s_count, f_count - 1)
@@ -229,12 +227,8 @@ class ViewsTests(TestCase):
         form_data = {
             'text': 'New',
         }
-        response = self.auth_user.post(
-            reverse('posts:post_edit', kwargs={
-                'username': 'TestUser', 'post_id': 1,
-            }),
-            data=form_data,
-            follow=True
-        )
+        self.auth_user.post(reverse('posts:post_edit', kwargs={
+            'username': 'TestUser', 'post_id': 1
+        }), data=form_data, follow=True)
         key = make_template_fragment_key('index_page')
         self.assertIsNotNone(cache.get(key))

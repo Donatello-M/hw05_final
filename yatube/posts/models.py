@@ -61,9 +61,7 @@ class Post(models.Model):
                                help_text="Автор - это вы")
     image = models.ImageField(upload_to='posts/', verbose_name="Изображение",
                               blank=True, null=True,
-                              help_text=(
-                                    "Можете добавить изображение"
-                                        )
+                              help_text="Можете добавить изображение"
                               )
 
     class Meta:
@@ -88,9 +86,7 @@ class Comment(models.Model):
                             )
     created = models.DateTimeField(verbose_name="Дата создания комментария",
                                    auto_now_add=True,
-                                   help_text=(
-                                       "Дата формируется автоматически"
-                                   ),
+                                   help_text="Дата формируется автоматически",
                                    db_index=True
                                    )
 
