@@ -63,7 +63,7 @@ class Post(models.Model):
         )
     )
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE,related_name="posts",
+        User, on_delete=models.CASCADE, related_name="posts",
         verbose_name="Автор", help_text="Автор - это вы"
     )
     image = models.ImageField(
