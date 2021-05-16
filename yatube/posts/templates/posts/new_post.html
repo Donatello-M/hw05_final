@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}
+{% if create %}
+    Создать новый пост
+{% else %}
+    Отредактировать пост
+{% endif %}
+{% endblock %}
+{% block content %}
+{% load user_filters %}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 p-5">
+        <div class="card">
+            <div class="card-header">
+                {% if create %}
+                    Создание поста
+                {% else %}
+                    Редактирование поста
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <!--После ревью 4 спринта я подумал, что ошибки в этой форме могут
+                быть связаны только с незаполненым полем текста. Захотел переделать,
+                и в голове висело 2 варианта: написать валидатор, который выведет сообщение,
+                если пост состоит только из пробелов, либо вместо цикла по ошибкам просто
+                вывести сообщение, указывающее на пустое поле. Проблема первого варианта
+                в том, что такой валидатор есть[уверен, что ты и без моих рассуждений
+                об этом знаешь, но я все равно буду рассуждать)], но он выводит
+                исключительно "text". Я пытался найти что-нибудь об этом валидаторе, но успехом
+                мои попытки не увенчались.
+                Проблема второго в том, что сейчас я не уверен, что ошибки могут быть
+                только в поле текста. В общем, я думал-думал, а в итоге просто забыл
+                и оставил кусок кода закомментированым. Можно было написать об этом и в слаке, но,
+                наверное, тебе будет проще понять, о чем я говорю, смотря на код-->
+                {% if form.errors %}
+                    {% for error in form.errors.values%}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error|escape }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    {% for field in form %}
+                        <div class="form-group row" aria-required={% if field.field.required %}
+                            "true"{% else %}"false"{% endif %}>
+                            <label for="{{ field.id_for_label }}" class="col-md-4 col-form-label text-md-right">
+                                {{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}
+                            </label>
+                            <div class="col-md-6">
+                                {% if field.label == "Изображение" %}
+                                    {{ field|addclass:"form-control-file" }}
+                                {% else %}
+                                    {{ field|addclass:"form-control" }}
+                                {% endif %}
+                                {% if field.help_text %}
+                                    <small id="{{ field.id_for_label }}-help" class="form-text text-muted">
+                                        {{ field.help_text|safe }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+
+            <div class="col-md-6 offset-md-4">
+                <button type="submit" class="btn btn-primary">
+                    {% if create %}
+                    Опубликовать
+                    {% else %}
+                    Сохранить
+                    {% endif %}
+                </button>
+            </div>
+            </form>
+        </div> <!-- card body -->
+    </div> <!-- card -->
+</div> <!-- col -->
+</div> <!-- row -->
+
+{% endblock %}

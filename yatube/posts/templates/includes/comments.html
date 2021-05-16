@@ -1,0 +1,55 @@
+{% load user_filters %}
+<!-- Форма добавления комментария -->
+{% load user_filters %}
+
+{% if user.is_authenticated %}
+<div class="card my-3">
+    <form method="post" action="/{{ author.username }}/{{ post.id }}/comment/">
+        {% csrf_token %}
+        <h5 class="card-header">Добавить комментарий:</h5>
+        {% if form.errors %}
+        {% for error in form.errors.values%}
+        <div class="alert alert-danger" role="alert">
+            {{ error|escape }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        <div class="card-body">
+            <div class="form-group">
+                <div class="form-row">
+                    <div class="col">
+                        {{ form.text|addclass:"form-control-lg" }}
+                    </div>
+                    <div class="col">
+                        <small class="form-text text-muted">
+                            {{ form.text.help_text|safe }}</small>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Отправить</button>
+        </div>
+    </form>
+</div>
+{% endif %}
+
+<div class="card my-6">
+    <h5 class="card-header">Предыдущие комментарии:</h5>
+    {% for item in comments %}
+    <!--<div class="media card mb-2">
+        <div class="media-body card-body">-->
+    <div style="margin-left: 20px">
+        <h5 class="mt-2">
+            <a href="/{{item.author.username}}/"
+               name="comment_{{ item.id }}">
+                {{ item.author.username }}
+            </a>
+        </h5>
+        <p>{{ item.text | linebreaksbr }}</p>
+        {% if not forloop.last %}
+        <hr>
+        {% endif %}
+    </div>
+    <!--</div>
+</div>-->
+    {% endfor %}
+</div>

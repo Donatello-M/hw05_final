@@ -1,0 +1,17 @@
+{% if user.is_authenticated %}
+{% if user != author %}
+<li class="list-group-item">
+    {% if following %}
+    <a class="btn btn-lg btn-light"
+       href="/{{ author.username }}/unfollow" role="button">
+        Отписаться
+    </a>
+    {% else %}
+    <a class="btn btn-lg btn-primary"
+       href="/{{ author.username }}/follow" role="button">
+        Подписаться
+    </a>
+    {% endif %}
+</li>
+{% endif %}
+{% endif %}

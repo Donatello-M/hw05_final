@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Об авторе{% endblock %}
+{% block header %}Об авторе{% endblock %}
+{% block content %}
+
+  <main role="main" class="container">
+    <div class="row">
+      <!-- Левый вспомогательный блок -->
+      <div class="col-md-3 mb-3 mt-3">
+        <div class="card">
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <div class="h3">
+                  <a href="http://amogus.ru">
+                    <img src="{% static 'img/image.jpg'%}" alt="" width="100%" height="100%" align="center">
+                  </a>
+                </div>
+              </li>
+              <li class="list-group-item">
+                <div class="h6 text-muted">
+                  <a href="https://github.com/Donatello-M">
+                    <img src="{% static 'img/github.png' %}" width="23%" height="23%">
+                  </a>
+                  <a href="https://vk.com/peace_lord">
+                    <img src="{% static 'img/vk.png' %}" width="23%" height="23%">
+                  </a>
+                  <a href="https://www.instagram.com/acidmkrrr/">
+                    <img src="{% static 'img/inst.png' %}" width="23%" height="23%">
+                  </a>
+                  <a href="https://2ch.hk">
+                    <img src="{% static 'img/yoba.png' %}" width="23%" height="23%">
+                  </a>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- Тело страницы -->
+      <div class="col-md-9">
+        <div class="card-body">
+          <div class="card-text">
+            <br>
+            <p>Этот кабачок сидит в тесной темной комнатушке в общаге,
+              являясь студентом второго курса лучшего технического ВУЗа
+              Зеленограда, и клепает сайты, получая при этом 300.000кк/наносек.
+              А чего добился ты в свои 280 лет?
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock %}
