@@ -3,14 +3,12 @@
 {% block content %}
 {% load cache %}
 {% block header %}Последние обновления на сайте{% endblock %}
-<div class="container">
     {% include "includes/menu.html" with index=True %}
     {% cache 20 index_page %}
     {% for post in page %}
     {% include "includes/author_post.html" with post=post %}
     {% endfor %}
     {% endcache %}
-</div>
 {% if page.has_other_pages %}
 {% include "padginator.html" %}
 {% endif %}
