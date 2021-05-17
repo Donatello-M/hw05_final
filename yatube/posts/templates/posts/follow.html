@@ -1,13 +1,11 @@
 {% extends "base.html" %}
 {% block title %}Подписки{% endblock %}
 {% block content %}
-<h1>Новые записи ваших любимых авторов</h1>
-<div class="container">
+{% block header %}Новые записи ваших любимых авторов{% endblock %}
     {% include "includes/menu.html" with follow=True %}
     {% for post in page %}
     {% include "includes/author_post.html" with post=post %}
     {% endfor %}
-</div>
 {% if page.has_other_pages %}
 {% include "padginator.html" %}
 {% endif %}

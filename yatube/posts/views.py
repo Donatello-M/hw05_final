@@ -53,10 +53,9 @@ def profile(request, username):
     num = posts.count()
     followers = user.following.count()
     follows = user.follower.count()
-    following = False
-    if request.user.is_authenticated:
-        following = Follow.objects.filter(author=user,
-                                          user=request.user).exists()
+    following = (request.user.is_authenticated
+                 and Follow.objects.filter(author=user,
+                                           user=request.user).exists())
     paginator = Paginator(posts, POSTS_ON_PAGE)
     page_num = request.GET.get("page")
     page = paginator.get_page(page_num)
@@ -97,7 +96,6 @@ def add_comment(request, username, post_id):
         comment.author = request.user
         comment.post = post
         comment.save()
-        return redirect("posts:post_view", post_id=post_id, username=username)
     return redirect("posts:post_view", post_id=post_id, username=username)
 
 
@@ -119,8 +117,7 @@ def post_view(request, username, post_id):
 
 @login_required
 def follow_index(request):
-    follows = request.user.follower.all()
-    posts = Post.objects.filter(author__following__in=follows)
+    posts = Post.objects.filter(author__following__user=request.user)
     paginator = Paginator(posts, POSTS_ON_PAGE)
     page_num = request.GET.get("page")
     page = paginator.get_page(page_num)
@@ -133,9 +130,8 @@ def follow_index(request):
 @login_required
 def profile_follow(request, username):
     follow_author = get_object_or_404(User, username=username)
-    if request.user == follow_author:
-        return redirect("posts:profile", username=username)
-    Follow.objects.get_or_create(author=follow_author, user=request.user)
+    if request.user != follow_author:
+        Follow.objects.get_or_create(author=follow_author, user=request.user)
     return redirect("posts:profile", username=username)
 
 
@@ -158,10 +154,6 @@ def page_not_found(request, exception):
         {"path": request.path},
         status=404
     )
-
-
-def self_follow(request):
-    return render(request, "misc/self_follow.html")
 
 
 def server_error(request):
